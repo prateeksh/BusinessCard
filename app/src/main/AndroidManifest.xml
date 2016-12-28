@@ -40,7 +40,7 @@
         <provider
             android:authorities="@string/authority"
             android:name=".Database.DataProvider"
-            android:exported="false"
+            android:exported="true"
             android:syncable="true"/>
 
     </application>

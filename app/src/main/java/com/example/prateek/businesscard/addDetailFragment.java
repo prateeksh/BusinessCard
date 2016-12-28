@@ -1,9 +1,11 @@
 package com.example.prateek.businesscard;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.prateek.businesscard.Database.DataContract;
@@ -28,6 +31,7 @@ public class addDetailFragment extends Fragment {
     DataDbHelper dbHelper;
     Context mContext;
     //Context upCotext;
+    private static final int PICK_IMAGE = 0;
 
     public addDetailFragment() {
 
@@ -43,6 +47,7 @@ public class addDetailFragment extends Fragment {
     EditText facebook;
     EditText skype;
     EditText blog;
+    ImageView image;
 
     String name_data;
     String occ_data;
@@ -54,17 +59,18 @@ public class addDetailFragment extends Fragment {
     String skype_data;
     String facebook_data;
     String blog_data;
-
+    String image_data;
 
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_add_detail, container, false);
         mContext = getActivity();
         dbHelper = new DataDbHelper(mContext);
 
         nameText = (EditText) view.findViewById(R.id.name);
+        image = (ImageView) view.findViewById(R.id.userImage);
         occupation = (EditText) view.findViewById(R.id.occupation);
         company = (EditText) view.findViewById(R.id.company);
         phone = (EditText) view.findViewById(R.id.phone);
@@ -74,6 +80,18 @@ public class addDetailFragment extends Fragment {
         facebook = (EditText) view.findViewById(R.id.facebook);
         skype = (EditText) view.findViewById(R.id.skype);
         blog = (EditText) view.findViewById(R.id.blog);
+
+        Button uploadImage = (Button) view.findViewById(R.id.imageUpload);
+        uploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gallery =
+                        new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, PICK_IMAGE);
+            }
+        });
+
 
         Button button = (Button) view.findViewById(R.id.submit);
         button.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +115,7 @@ public class addDetailFragment extends Fragment {
                     ContentValues contentValues = new ContentValues();
 
                     contentValues.put(DataContract.DataEntry.NAME, name_data);
+                    contentValues.put(DataContract.DataEntry.IMAGE, image_data);
                     contentValues.put(DataContract.DataEntry.OCCUPATION, occ_data);
                     contentValues.put(DataContract.DataEntry.COMPANY, comp_data);
                     contentValues.put(DataContract.DataEntry.PHONE, phon_data);
@@ -132,6 +151,21 @@ public class addDetailFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+                Uri imageUri = data.getData();
+                Log.v("IMAGE", imageUri.toString());
+                image.setImageURI(imageUri);
+                image_data = imageUri.toString();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

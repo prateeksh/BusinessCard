@@ -7,11 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.prateek.businesscard.Database.DataContract;
 
 /**
@@ -25,8 +28,9 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
 
     public static final String DETAIL_URI = "DETAIL_URI";
     private static final String[] DETAILS_COLUMNS = {
-
+            DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry._ID,
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.NAME,
+            DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.IMAGE,
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.OCCUPATION,
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.COMPANY,
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.PHONE,
@@ -37,24 +41,26 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.FACEBOOK,
             DataContract.DataEntry.TABLE_NAME + "." + DataContract.DataEntry.BLOG
     };
-
+    private static final int COL_ID = 0;
     private static final int COL_NAME = 1;
-    private static final int COL_OCCUPATION = 2;
-    private static final int COL_COMPANY = 3;
-    private static final int COL_PHONE = 4;
-    private static final int COL_WORK = 5;
-    private static final int COL_HANGOUT = 6;
-    private static final int COL_SKYPE = 7;
-    private static final int COL_GOOGLE = 8;
-    private static final int COL_FACEBOOK = 9;
-    private static final int COL_BLOG = 10;
+    private static final int COL_IMAGE = 2;
+    private static final int COL_OCCUPATION = 3;
+    private static final int COL_COMPANY = 4;
+    private static final int COL_PHONE = 5;
+    private static final int COL_WORK = 6;
+    private static final int COL_HANGOUT = 7;
+    private static final int COL_SKYPE = 8;
+    private static final int COL_GOOGLE = 9;
+    private static final int COL_FACEBOOK = 10;
+    private static final int COL_BLOG = 11;
 
-    private static final int CURSOR_LOADER_ID = 0;
+    private static final int CURSOR_LOADER_ID = 1;
 
     private Uri mUri;
     private Cursor mCurosr;
 
     private TextView mName;
+    private ImageView mImage;
     private TextView mOccupation;
     private TextView mCompany;
     private TextView mPhone;
@@ -65,11 +71,18 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     private TextView mFace;
     private TextView mBlog;
 
+
+    @Override
+    public void onStart(){
+        super.onStart();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_display_info, container, false);
         mName = (TextView) view.findViewById(R.id.name1);
+        mImage = (ImageView) view.findViewById(R.id.disp_image);
         mOccupation = (TextView) view.findViewById(R.id.occ);
         mCompany = (TextView) view.findViewById(R.id.comp);
         mPhone = (TextView) view.findViewById(R.id.phone1);
@@ -84,20 +97,32 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
         if (arguments != null){
             mUri = arguments.getParcelable(DisplayInfoFragment.DETAIL_URI);
         }
-
+        Log.v("WORKING","ON CREATE");
         return view;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+    /*    Loader loader = getLoaderManager().getLoader(0);
+        if(loader != null && loader.isReset()){
+            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+        }else {
+            getLoaderManager().initLoader(CURSOR_LOADER_ID , null, this);
+        }*/
+
+        Log.v("WORKING","ON ACTIVITY CREATED");
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args){
-
+        mUri = DataContract.DataEntry.buildDataUri(id);
+        Log.v("WORKING","ON LOADER CREATE " + mUri);
         if(null != mUri){
+            Log.v("URI", "mUri NOT NULL");
             return new CursorLoader(
                     getActivity(),
                     mUri,
@@ -109,18 +134,33 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
         return null;
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data){
-
-        if(!data.moveToFirst()){
+        int id = loader.getId();
+        data.moveToFirst();
+        Log.v("WORKING","ON LOadeR FINISHED" + data);
+        if (!data.moveToFirst()) {
             return;
         }
 
         String name = data.getString(COL_NAME);
         mName.setText(name);
 
+        Log.v("NAME", name);
+
+        String image = data.getString(COL_IMAGE);
+        Glide
+                .with(this)
+                .load(image)
+
+                .into(mImage);
+        Log.v("IMAGE" ,"URL" + image);
+
         String occupation = data.getString(COL_OCCUPATION);
         mOccupation.setText(occupation);
+
+        Log.v("Occupation", occupation);
 
         String company = data.getString(COL_COMPANY);
         mCompany.setText(company);
@@ -137,7 +177,7 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
         String skype = data.getString(COL_SKYPE);
         mSkype.setText(skype);
 
-        String google =data.getString(COL_GOOGLE);
+        String google = data.getString(COL_GOOGLE);
         mGoogle.setText(google);
 
         String facebook = data.getString(COL_FACEBOOK);
@@ -152,6 +192,5 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader){
 
     }
-
 
 }

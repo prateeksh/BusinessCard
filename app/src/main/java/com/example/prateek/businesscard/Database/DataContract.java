@@ -15,13 +15,13 @@ public class DataContract{
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String BUSINESS_CARD = "cardinfo1";
+    public static final String BUSINESS_CARD = "cardinfo12";
 
     public static final class DataEntry implements BaseColumns{
-        public static final String TABLE_NAME = "cardinfo1";
-       // public static final String ID = "data_id";
+        public static final String TABLE_NAME = "cardinfo12";
+        public static final String DATA_ID = "data_id";
         public static final String NAME = "name";
-        //public static final String IMAGE = "image";
+        public static final String IMAGE = "image";
         public static final String OCCUPATION = "occupation";
         public static final String COMPANY = "company";
         public static final String PHONE = "phone";
@@ -47,7 +47,8 @@ public class DataContract{
             return Long.parseLong(uri.getPathSegments().get(1));
         }
 
-        public static Uri getDataUriWithId(long id){
+
+        public static Uri buildDataUriWithId(long id) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
 

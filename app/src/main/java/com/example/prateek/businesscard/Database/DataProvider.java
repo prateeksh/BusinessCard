@@ -20,7 +20,9 @@ public class DataProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    //private static final String sdataByIdSelection = DataContract.DataEntry
+    private static final String sdataByIdSelection = DataContract.DataEntry.TABLE_NAME +
+            "." + DataContract.DataEntry._ID + " = ? ";
+
     private DataDbHelper mOpenHelper;
 
     private static UriMatcher buildUriMatcher(){
@@ -32,14 +34,19 @@ public class DataProvider extends ContentProvider {
         return matcher;
     }
 
-   /* private Cursor getDataById(Uri uri, String[] projection, String sortOrder){
+    private Cursor getDataById(Uri uri, String[] projection, String sortOrder) {
         long id = DataContract.DataEntry.getDataIdFromUri(uri);
 
         return mOpenHelper.getReadableDatabase().query(
                 DataContract.DataEntry.TABLE_NAME,
                 projection,
-                s
-        )*/
+                sdataByIdSelection,
+                new String[]{Long.toString(id)},
+                null,
+                null,
+                sortOrder
+        );
+    }
     @Override
     public boolean onCreate(){
         mOpenHelper = new DataDbHelper(getContext());
@@ -76,14 +83,15 @@ public class DataProvider extends ContentProvider {
                 );
                 break;
             }
-            /*case DATA_WITH_ID: {
-                retCursor =
-            }*/
+            case DATA_WITH_ID: {
+                retCursor = getDataById(uri, projection, sortOrder);
+                break;
+            }
             default:{
                 throw new UnsupportedOperationException("Unknown Uri: " + uri);
             }
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
     @Override

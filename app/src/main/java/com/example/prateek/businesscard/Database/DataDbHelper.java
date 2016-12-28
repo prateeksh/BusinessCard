@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataDbHelper extends SQLiteOpenHelper{
 
-    public static final String DATABASE_NAME = "businesscardinfo1.db";
+    public static final String DATABASE_NAME = "businesscardinfo12.db";
 
     private static final int DATABASE_VERSION = 13;
 
@@ -23,9 +23,8 @@ public class DataDbHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_TABLE = "CREATE TABLE " +
                 DataContract.DataEntry.TABLE_NAME + "(" +
                 DataContract.DataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-
                 DataContract.DataEntry.NAME + " TEXT NOT NULL, " +
-
+                DataContract.DataEntry.IMAGE + " INTEGER NOT NULL, " +
                 DataContract.DataEntry.OCCUPATION + " TEXT NOT NULL, " +
                 DataContract.DataEntry.COMPANY + " TEXT NOT NULL, " +
                 DataContract.DataEntry.PHONE + " INTEGER NOT NULL, " +
