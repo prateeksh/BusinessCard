@@ -93,7 +93,7 @@ public class addDetailFragment extends Fragment {
         });
 
 
-        Button button = (Button) view.findViewById(R.id.submit);
+        final Button button = (Button) view.findViewById(R.id.submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,6 +144,7 @@ public class addDetailFragment extends Fragment {
                 Toast.makeText(mContext, "Data Saved", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
+                button.setVisibility(view.INVISIBLE);
                 /*if(name_data != null) {
                     Intent intent = new Intent(getActivity(), DisplayInfo.class);
                     startActivity(intent);

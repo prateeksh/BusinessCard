@@ -57,7 +57,7 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     private static final int CURSOR_LOADER_ID = 1;
 
     private Uri mUri;
-    private Cursor mCurosr;
+
 
     private TextView mName;
     private ImageView mImage;
@@ -72,9 +72,11 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     private TextView mBlog;
 
 
+
     @Override
     public void onStart(){
         super.onStart();
+        setRetainInstance(true);
     }
 
     @Override
@@ -93,11 +95,14 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
         mFace = (TextView) view.findViewById(R.id.faceb);
         mBlog = (TextView) view.findViewById(R.id.blog1);
 
+
+
+
+
         Bundle arguments = getArguments();
         if (arguments != null){
             mUri = arguments.getParcelable(DisplayInfoFragment.DETAIL_URI);
         }
-        Log.v("WORKING","ON CREATE");
         return view;
     }
 
@@ -106,23 +111,15 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-    /*    Loader loader = getLoaderManager().getLoader(0);
-        if(loader != null && loader.isReset()){
-            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
-        }else {
-            getLoaderManager().initLoader(CURSOR_LOADER_ID , null, this);
-        }*/
-
-        Log.v("WORKING","ON ACTIVITY CREATED");
     }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args){
         mUri = DataContract.DataEntry.buildDataUri(id);
-        Log.v("WORKING","ON LOADER CREATE " + mUri);
+
         if(null != mUri){
-            Log.v("URI", "mUri NOT NULL");
+
             return new CursorLoader(
                     getActivity(),
                     mUri,
@@ -139,7 +136,7 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor data){
         int id = loader.getId();
         data.moveToFirst();
-        Log.v("WORKING","ON LOadeR FINISHED" + data);
+
         if (!data.moveToFirst()) {
             return;
         }
@@ -147,15 +144,14 @@ public class DisplayInfoFragment extends Fragment implements LoaderManager.Loade
         String name = data.getString(COL_NAME);
         mName.setText(name);
 
-        Log.v("NAME", name);
+
 
         String image = data.getString(COL_IMAGE);
+
         Glide
                 .with(this)
                 .load(image)
-
                 .into(mImage);
-        Log.v("IMAGE" ,"URL" + image);
 
         String occupation = data.getString(COL_OCCUPATION);
         mOccupation.setText(occupation);

@@ -11,4 +11,14 @@
     <string name="title_activity_detail_display">DetailDisplay</string>
     <string name="title_activity_display_info">DisplayInfo</string>
     <string name="authority">com.example.prateek.businesscard</string>
+    <string name="occupation">Occupation</string>
+    <string name="company">Company</string>
+    <string name="phone">Phone</string>
+    <string name="work">Work</string>
+    <string name="hangout">Hangout</string>
+    <string name="skype">Skype</string>
+    <string name="google">Google</string>
+    <string name="fb">Facebook</string>
+    <string name="blog">Blog</string>
+
 </resources>
